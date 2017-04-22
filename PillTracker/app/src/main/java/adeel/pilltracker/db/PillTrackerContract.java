@@ -12,5 +12,9 @@ public final class PillTrackerContract {
 
     public static class Medication implements BaseColumns {
         // the names of the columns in the Medication table will go here as static final variables
+        // Medicine
+        // Description
+        // Capacity
+        // Number of pills taken
     }
 }
