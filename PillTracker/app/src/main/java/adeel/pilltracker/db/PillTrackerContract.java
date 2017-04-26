@@ -16,5 +16,10 @@ public final class PillTrackerContract {
         // Description
         // Capacity
         // Number of pills taken
+        public static final String TABLE_NAME = "medication";
+        public static final String COLUMN_NAME_MEDICATION_NAME = "medication_name";
+        public static final String COLUMN_NAME_DESCRIPTION = "description";
+        public static final String COLUMN_NAME_CAPACITY = "capacitiy";
+        public static final String COLUMN_NAME_PILLS_TAKEN = "pills_taken";
     }
 }
