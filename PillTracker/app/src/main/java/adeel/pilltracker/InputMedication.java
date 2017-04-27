@@ -2,6 +2,7 @@ package adeel.pilltracker;
 
 import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -52,14 +53,18 @@ public class InputMedication extends AppCompatActivity {
         long newRowId = db.insert(PillTrackerContract.Medication.TABLE_NAME, null, values);
 
         /* Notify user that the operation was completd */
-        // 1. Instantiate an AlertDialog.Builder with its constructor
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-// 2. Chain together various setter methods to set the dialog characteristics
         builder.setMessage(R.string.save_success_message)
                 .setTitle(R.string.save_success_title);
 
-// 3. Get the AlertDialog from create()
+        // finish the input medication activity after the dialog is closed
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                finish();
+            }
+        });
+
         AlertDialog dialog = builder.create();
     }
 }
