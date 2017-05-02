@@ -32,6 +32,8 @@ public class MedicationSummary extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        Cursor medCursor = readMedicationData();
     }
 
     @Override
@@ -61,14 +63,20 @@ public class MedicationSummary extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void readMedicationData(){
+    /* read a list of medications from the db and return a Cursor object.
+       That Cursor will get passed to a SimpleCursorAdapter and then a ListView
+       to generate the medication summary for this activity
+     */
+    public Cursor readMedicationData(){
         PillTrackerDbHelper dbHelper = new PillTrackerDbHelper(this);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
         // Define a projection that specifies which columns from the database
         // you will actually use after this query.
-        // for a medication summary screen we only need to have the medication name
+        // for a medication summary screen we only need to have the medication name,
+        // but we want the primary key as well so we can send it to the MedicationDetails activity
         String[] projection = {
+                PillTrackerContract.Medication._ID,
                 PillTrackerContract.Medication.COLUMN_NAME_MEDICATION_NAME
         };
 
@@ -79,7 +87,7 @@ public class MedicationSummary extends AppCompatActivity {
         // we also don't care about the sort order right now
         String sortOrder = "";
 
-        Cursor cursor = db.query(
+        return db.query(
                 PillTrackerContract.Medication.TABLE_NAME,                     // The table to query
                 projection,                               // The columns to return
                 selection,                                // The columns for the WHERE clause
