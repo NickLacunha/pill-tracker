@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import adeel.pilltracker.db.PillTrackerContract;
@@ -24,6 +25,15 @@ public class InputMedication extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_input_medication);
+
+        /* programmatically set click event for the floating action button */
+        Button saveButton = findViewById(R.id.submit_med_button);
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveMedication(view);
+            }
+        });
     }
 
     public void saveMedication(View view) {
