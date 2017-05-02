@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import adeel.pilltracker.db.PillTrackerContract;
@@ -24,6 +25,15 @@ public class InputMedication extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_input_medication);
+
+        /* programmatically set click event for the floating action button */
+        Button saveButton = (Button) findViewById(R.id.submit_med_button);
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveMedication(view);
+            }
+        });
     }
 
     public void saveMedication(View view) {
@@ -53,7 +63,7 @@ public class InputMedication extends AppCompatActivity {
         long newRowId = db.insert(PillTrackerContract.Medication.TABLE_NAME, null, values);
 
         /* Notify user that the operation was completd */
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(InputMedication.this);
         builder.setMessage(R.string.save_success_message)
                 .setTitle(R.string.save_success_title);
 
@@ -66,5 +76,6 @@ public class InputMedication extends AppCompatActivity {
         });
 
         AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

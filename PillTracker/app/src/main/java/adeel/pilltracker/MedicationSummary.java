@@ -12,6 +12,7 @@ import android.view.MenuItem;
 
 public class MedicationSummary extends AppCompatActivity {
 
+    /* largely auto-generated code */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,11 +21,12 @@ public class MedicationSummary extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
+        /* programmatically set click event for the floating action button */
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                inputMedication(view);
             }
         });
     }
@@ -51,6 +53,9 @@ public class MedicationSummary extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /* used as the click listener for the floating action button,
+     * opens the input medication activity
+     */
     public void inputMedication(View view){
         Intent intent = new Intent(this, InputMedication.class);
         startActivity(intent);
