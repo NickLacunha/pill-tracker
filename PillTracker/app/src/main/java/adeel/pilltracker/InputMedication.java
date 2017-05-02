@@ -27,7 +27,7 @@ public class InputMedication extends AppCompatActivity {
         setContentView(R.layout.activity_input_medication);
 
         /* programmatically set click event for the floating action button */
-        Button saveButton = findViewById(R.id.submit_med_button);
+        Button saveButton = (Button) findViewById(R.id.submit_med_button);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -63,7 +63,7 @@ public class InputMedication extends AppCompatActivity {
         long newRowId = db.insert(PillTrackerContract.Medication.TABLE_NAME, null, values);
 
         /* Notify user that the operation was completd */
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(InputMedication.this);
         builder.setMessage(R.string.save_success_message)
                 .setTitle(R.string.save_success_title);
 
@@ -76,5 +76,6 @@ public class InputMedication extends AppCompatActivity {
         });
 
         AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }
