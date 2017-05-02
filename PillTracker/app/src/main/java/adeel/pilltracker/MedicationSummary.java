@@ -20,6 +20,9 @@ import adeel.pilltracker.db.PillTrackerDbHelper;
 
 public class MedicationSummary extends ListActivity {
 
+    ListView mListView;
+    SimpleCursorAdapter mAdapter;
+
     /* largely auto-generated code */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,11 +52,22 @@ public class MedicationSummary extends ListActivity {
                 R.id.item_medication_list
         };
 
-        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
+        mAdapter = new SimpleCursorAdapter(this,
                 R.layout.item_medication_list, medCursor, fromColumns, toViews, 0);
-        ListView listView = getListView();
-        listView.setAdapter(adapter);
+        mListView = getListView();
+        mListView.setAdapter(mAdapter);
 
+    }
+
+    @Override
+    /* whenever the activity is brought back to the foreground, there might be a new or deleted
+        medication so we should update the list.
+    */
+    public void onResume(){
+        super.onResume();
+        /*mAdapter.notifyDataSetChanged();*/
+        Cursor medCursor = readMedicationData();
+        mAdapter.changeCursor(medCursor);
     }
 
     @Override
