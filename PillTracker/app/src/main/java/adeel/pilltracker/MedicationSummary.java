@@ -1,5 +1,6 @@
 package adeel.pilltracker;
 
+import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -11,18 +12,20 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 
 import adeel.pilltracker.db.PillTrackerContract;
 import adeel.pilltracker.db.PillTrackerDbHelper;
 
-public class MedicationSummary extends AppCompatActivity {
+public class MedicationSummary extends ListActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_medication_summary);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        //setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -33,7 +36,22 @@ public class MedicationSummary extends AppCompatActivity {
             }
         });
 
+        // pull the list of medications
         Cursor medCursor = readMedicationData();
+
+        // set up a CursorAdapter
+        String[] fromColumns = {
+                PillTrackerContract.Medication.COLUMN_NAME_MEDICATION_NAME
+        };
+        int[] toViews = {
+                R.id.item_medication_list
+        };
+
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
+                R.layout.item_medication_list, medCursor, fromColumns, toViews, 0);
+        ListView listView = getListView();
+        listView.setAdapter(adapter);
+
     }
 
     @Override
