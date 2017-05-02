@@ -66,5 +66,6 @@ public class InputMedication extends AppCompatActivity {
         });
 
         AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }
