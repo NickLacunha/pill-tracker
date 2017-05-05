@@ -17,20 +17,22 @@ public class Alarm extends BroadcastReceiver
     public static final String ALARM_MODE_CANCEL = "adeel.pilltracker.ALARM_MODE_CANCEL";
     public static final String ALARM_MODE_RENEW = "adeel.pilltracker.ALARM_MODE_RENEW";
 
+    public static final long DAY_MILLIS = (1000*60*60*24);
+
     @Override
-    public void onReceive(Context context, Intent intent)
+    public void onReceive(Context context, Intent alarmIntent)
     {
-        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "");
-        wl.acquire();
+        String medAlarmName = alarmIntent.getStringExtra(MedicationNotification.EXTRA_ALARM_NAME);
+        int medAlarmID = alarmIntent.getIntExtra(MedicationNotification.EXTRA_ALARM_ID, 0);
+        long medAlarmTimeUTC = alarmIntent.getLongExtra(MedicationNotification.EXTRA_ALARM_TIME, 0);
 
-        // TODO: Replace with appropriate message (probably set by an extra in the intent)
+        Intent notificationIntent = new Intent(context, MedicationNotification.class);
 
-        Toast.makeText(context, "Alarm !!!!!!!!!!", Toast.LENGTH_LONG).show(); // For example
+        notificationIntent.putExtra(MedicationNotification.EXTRA_ALARM_NAME, medAlarmName);
+        notificationIntent.putExtra(MedicationNotification.EXTRA_ALARM_TIME, medAlarmTimeUTC);
+        notificationIntent.putExtra(MedicationNotification.EXTRA_ALARM_ID, medAlarmID);
 
-        // TODO: Add med-counting logic
-
-        wl.release();
+        context.startActivity(notificationIntent);
     }
 
     /* Sets the medication alarm.
@@ -40,18 +42,21 @@ public class Alarm extends BroadcastReceiver
      */
     public void setAlarm(Context context, String medAlarmName, long medAlarmTimeUTC, int medAlarmID)
     {
+        int ID = medAlarmID;
         AlarmManager am =( AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         Intent i = new Intent(context, Alarm.class);
         PendingIntent pi;
 
-        // put the message extra into the intent
+        // when the alarm goes off, it will need to be reset and the med count will need to be updated
         i.putExtra(MedicationNotification.EXTRA_ALARM_NAME, medAlarmName);
+        i.putExtra(MedicationNotification.EXTRA_ALARM_ID, medAlarmID);
+        i.putExtra(MedicationNotification.EXTRA_ALARM_TIME, medAlarmID + DAY_MILLIS );  // advance the alarm time by a day
 
         // set pendingintent requestcode to the ID of the medication in the database so we can
         // easily cancel the alarm later if we need to.
-        pi = PendingIntent.getBroadcast(context, medAlarmID, i, 0);
+        pi = PendingIntent.getBroadcast(context, ID, i, 0);
 
-        am.set(AlarmManager.RTC_WAKEUP, medAlarmTimeUTC, pi); // Millisec * Second * Minute
+        am.setExact(AlarmManager.RTC_WAKEUP, medAlarmTimeUTC, pi); // Millisec * Second * Minute
     }
 
     // TODO: Add parameters to this method and replace with our application logic

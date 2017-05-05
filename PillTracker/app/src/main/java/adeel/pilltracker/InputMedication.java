@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import adeel.pilltracker.db.PillTrackerContract;
@@ -22,6 +23,8 @@ import adeel.pilltracker.db.PillTrackerDbHelper;
 public class InputMedication extends AppCompatActivity {
 
     private PillTrackerDbHelper mDbHelper = new PillTrackerDbHelper(this);
+
+    private Alarm alarm = new Alarm();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +65,7 @@ public class InputMedication extends AppCompatActivity {
         values.put(PillTrackerContract.Medication.COLUMN_NAME_CAPACITY, capacity);
         values.put(PillTrackerContract.Medication.COLUMN_NAME_PILLS_TAKEN, taken);
 
-        long newRowId = db.insert(PillTrackerContract.Medication.TABLE_NAME, null, values);
+        int newRowId = (int) db.insert(PillTrackerContract.Medication.TABLE_NAME, null, values);
 
 
         // from the time given (description), set the milliseconds-from-epoch for the first alarm to go off
@@ -78,6 +81,9 @@ public class InputMedication extends AppCompatActivity {
             setTime += 1000 * 60 * 60 *24;
         }
 
+        calendar.setTimeInMillis(setTime);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss z");
+        String debugTime = sdf.format(calendar.getTime());
 
         /* Invoke the AlarmService to set a new alarm for this medication
         * The extras passed in tell the alarm service what medication to inform the user to take,
@@ -85,7 +91,7 @@ public class InputMedication extends AppCompatActivity {
         * and what time the alarm should set for. The "Alarm mode" extra tells the AlarmService
         * that we are starting a new alarm.
         */
-        Intent intent = new Intent(this, Alarm.class);
+        Intent intent = new Intent(this, AlarmService.class);
         intent.putExtra(MedicationNotification.EXTRA_ALARM_NAME, medicationName);
         intent.putExtra(MedicationNotification.EXTRA_ALARM_ID, newRowId);
         intent.putExtra(MedicationNotification.EXTRA_ALARM_MODE, Alarm.ALARM_MODE_START);
