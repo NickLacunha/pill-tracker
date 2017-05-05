@@ -9,6 +9,10 @@ import android.widget.Toast;
 
 public class Alarm extends BroadcastReceiver
 {
+    public static final String ALARM_MODE_START = "adeel.pilltracker.ALARM_MODE_START";
+    public static final String ALARM_MODE_CANCEL = "adeel.pilltracker.ALARM_MODE_CANCEL";
+    public static final String ALARM_MODE_RENEW = "adeel.pilltracker.ALARM_MODE_RENEW";
+
     @Override
     public void onReceive(Context context, Intent intent)
     {

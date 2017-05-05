@@ -62,6 +62,19 @@ public class InputMedication extends AppCompatActivity {
 
         long newRowId = db.insert(PillTrackerContract.Medication.TABLE_NAME, null, values);
 
+        /* Invoke the AlarmService to set a new alarm for this medication
+        * The extras passed in tell the alarm service what medication to inform the user to take,
+        * what ID to use to register the pending intent for the alarm (so it can be cancelled)
+        * and what time the alarm should set for. The "Alarm mode" extra tells the AlarmService
+        * that we are starting a new alarm.
+        */
+        Intent intent = new Intent(this, Alarm.class);
+        intent.putExtra(MedicationNotification.EXTRA_ALARM_NAME, medicationName);
+        intent.putExtra(MedicationNotification.EXTRA_ALARM_ID, newRowId);
+        intent.putExtra(MedicationNotification.EXTRA_ALARM_MODE, Alarm.ALARM_MODE_START);
+        intent.putExtra(MedicationNotification.EXTRA_ALARM_TIME, description);
+        startActivity(intent);
+
         /* Notify user that the operation was completd */
         AlertDialog.Builder builder = new AlertDialog.Builder(InputMedication.this);
         builder.setMessage(R.string.save_success_message)
