@@ -5,6 +5,8 @@ import android.os.Bundle;
 
 public class MedicationNotification extends AppCompatActivity {
 
+    public static final String EXTRA_ALARM_MODE = "adeel.pilltracker.EXTRA_ALARM_MODE";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
