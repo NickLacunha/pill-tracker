@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
+import android.util.Log;
 
 public class AlarmService extends Service
 {
@@ -20,6 +21,7 @@ public class AlarmService extends Service
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
+        Log.i("AlarmService", "Alarm service invoked");
         String medAlarmName = "";
         String tempTime;
         long medAlarmTimeUTC = 0;
@@ -30,9 +32,11 @@ public class AlarmService extends Service
 
         switch(alarmMode){
             case Alarm.ALARM_MODE_START:
+                Log.i("AlarmService", "Starting an alarm.");
                 medAlarmName = intent.getStringExtra(MedicationNotification.EXTRA_ALARM_NAME);
                 medAlarmTimeUTC = intent.getLongExtra(MedicationNotification.EXTRA_ALARM_TIME, 0);
                 medAlarmID = intent.getIntExtra(MedicationNotification.EXTRA_ALARM_ID, 0);
+                Log.i("AlarmService", "Got the params");
                 alarm.setAlarm(this, medAlarmName, medAlarmTimeUTC, medAlarmID);
                 break;
             case Alarm.ALARM_MODE_CANCEL:

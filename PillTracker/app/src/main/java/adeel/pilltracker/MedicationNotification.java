@@ -1,8 +1,10 @@
 package adeel.pilltracker;
 
+import android.content.Intent;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.TextView;
 
 public class MedicationNotification extends AppCompatActivity {
 
@@ -15,5 +17,11 @@ public class MedicationNotification extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_medication_notification);
+
+        Intent notificationIntent = getIntent();
+        String medicationName = notificationIntent.getStringExtra(EXTRA_ALARM_NAME);
+
+        TextView mainText = (TextView) findViewById(R.id.notificationTextView);
+        mainText.setText("It's time to take your " + medicationName);
     }
 }
