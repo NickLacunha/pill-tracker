@@ -7,6 +7,10 @@ import android.content.Intent;
 import android.os.PowerManager;
 import android.widget.Toast;
 
+
+/* This is a subclass of BroadcastReceiver which provides an interface by which
+ * the caller can set, cancel, or reset alarms for medications.
+ */
 public class Alarm extends BroadcastReceiver
 {
     public static final String ALARM_MODE_START = "adeel.pilltracker.ALARM_MODE_START";
@@ -21,20 +25,33 @@ public class Alarm extends BroadcastReceiver
         wl.acquire();
 
         // TODO: Replace with appropriate message (probably set by an extra in the intent)
+
         Toast.makeText(context, "Alarm !!!!!!!!!!", Toast.LENGTH_LONG).show(); // For example
+
+        // TODO: Add med-counting logic
 
         wl.release();
     }
 
-    // TODO: Add parameters to this method and replace with our application logic
-    // parameters should be time and medication id (from the database)
-    public void setAlarm(Context context)
+    /* Sets the medication alarm.
+     * medAlarmName is the name of the medication
+     * medAlarmTimeUTC is the time in milliseconds-from-epoch for the alarm to go off
+     * medAlarmID is the _ID of the medication in the database.
+     */
+    public void setAlarm(Context context, String medAlarmName, long medAlarmTimeUTC, int medAlarmID)
     {
         AlarmManager am =( AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         Intent i = new Intent(context, Alarm.class);
-        // pendingintent id should be the same as medication id
-        PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
-        am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 1000 * 60 * 10, pi); // Millisec * Second * Minute
+        PendingIntent pi;
+
+        // put the message extra into the intent
+        i.putExtra(MedicationNotification.EXTRA_ALARM_NAME, medAlarmName);
+
+        // set pendingintent requestcode to the ID of the medication in the database so we can
+        // easily cancel the alarm later if we need to.
+        pi = PendingIntent.getBroadcast(context, medAlarmID, i, 0);
+
+        am.set(AlarmManager.RTC_WAKEUP, medAlarmTimeUTC, pi); // Millisec * Second * Minute
     }
 
     // TODO: Add parameters to this method and replace with our application logic

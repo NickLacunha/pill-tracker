@@ -14,6 +14,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.util.Calendar;
+
 import adeel.pilltracker.db.PillTrackerContract;
 import adeel.pilltracker.db.PillTrackerDbHelper;
 
@@ -62,6 +64,21 @@ public class InputMedication extends AppCompatActivity {
 
         long newRowId = db.insert(PillTrackerContract.Medication.TABLE_NAME, null, values);
 
+
+        // from the time given (description), set the milliseconds-from-epoch for the first alarm to go off
+        String[] timeParts = description.split(":");
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY,Integer.parseInt(timeParts[0]));
+        calendar.set(Calendar.MINUTE, Integer.parseInt(timeParts[1]));
+
+        long setTime = calendar.getTimeInMillis();
+        long currentTime = System.currentTimeMillis();
+        if (setTime < currentTime) {
+            setTime += 1000 * 60 * 60 *24;
+        }
+
+
         /* Invoke the AlarmService to set a new alarm for this medication
         * The extras passed in tell the alarm service what medication to inform the user to take,
         * what ID to use to register the pending intent for the alarm (so it can be cancelled)
@@ -72,8 +89,8 @@ public class InputMedication extends AppCompatActivity {
         intent.putExtra(MedicationNotification.EXTRA_ALARM_NAME, medicationName);
         intent.putExtra(MedicationNotification.EXTRA_ALARM_ID, newRowId);
         intent.putExtra(MedicationNotification.EXTRA_ALARM_MODE, Alarm.ALARM_MODE_START);
-        intent.putExtra(MedicationNotification.EXTRA_ALARM_TIME, description);
-        startActivity(intent);
+        intent.putExtra(MedicationNotification.EXTRA_ALARM_TIME, setTime);
+        startService(intent);
 
         /* Notify user that the operation was completd */
         AlertDialog.Builder builder = new AlertDialog.Builder(InputMedication.this);
